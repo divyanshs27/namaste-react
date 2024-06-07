@@ -1,33 +1,41 @@
 import RestaurantCard from "./RestaurantCard";
 import resList from "../utils/mockData";
+import { useState,useEffect } from "react";
 const Body = ()=>{
+    //let listOfRestaurants = resList;
+    const [listOfRestaurants,setListOfRestaurants] = useState(
+       [...resList]
+    );
+    useEffect(()=>{
+        fetchData();
+        console.log('useEffect called')
+    }, [])
+    const fetchData = async () =>{
+        const data = await fetch("https://www.swiggy.com/mapi/homepage/getCards?lat=28.4594965&lng=77.0266383");
+        const test_json = '{"name":"John", "age":30, "city":"New York"}';
+        const json = await data.json();
+        const json1 = JSON.parse(test_json);
+        console.log(json1);
+    }
     return(
         <div className="body">
+            <div className="filter">
+                <button className="filter-btn" onClick={()=>{
+                  
+                    console.log("button clicked");
+                    const filteredList = listOfRestaurants.filter((res)=> 
+                        res.avgRating>4
+                    );
+                    console.log(filteredList);
+                    setListOfRestaurants(  filteredList);
+                }}>Top Rated Restaurants</button>
+            </div>
             <div className="search">Search</div>
             <div className="res-container">
-                {/* <RestaurantCard
-                name="Burger King"
-                cuisines="Burger, North Indian"
-                avgRating="4.9 star"
-                deliveryTime="23 minutes"/>
-                <RestaurantCard
-                name="KFC"
-                cuisines="Chicken, fried"
-                avgRating="4.7 star"
-                deliveryTime="32 minutes"/> */}
-                {resList.map((restaurant)=>(
+                {listOfRestaurants.map((restaurant)=>(
                      <RestaurantCard key={restaurant.id} resData={restaurant}/>
                 ))}
-                {/* <RestaurantCard resData={resList[0]}/>
-                <RestaurantCard resData={resList[1]}/>
-                <RestaurantCard resData={resList[2]}/>
-                <RestaurantCard resData={resList[3]}/>
-                <RestaurantCard resData={resList[4]}/>
-                <RestaurantCard resData={resList[5]}/>
-                <RestaurantCard resData={resList[6]}/>
-                <RestaurantCard resData={resList[7]}/>
-                <RestaurantCard resData={resList[8]}/>
-                <RestaurantCard resData={resList[0]}/> */}
+                
             </div>
         </div>
     )
